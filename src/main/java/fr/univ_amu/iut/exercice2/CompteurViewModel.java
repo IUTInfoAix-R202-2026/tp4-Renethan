@@ -1,5 +1,6 @@
 package fr.univ_amu.iut.exercice2;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -26,8 +27,7 @@ public class CompteurViewModel {
   public CompteurViewModel(Compteur compteur) {
     this.compteur = compteur;
 
-    // TODO exercice 2 : lier `message` à la valeur du compteur.
-    //
+    message.bind(Bindings.concat("Compteur à ", compteur.valeurProperty()));
     // `message` doit afficher "Compteur à N" où N est la valeur courante,
     // et se mettre à jour tout seul quand le compteur change.
     // Astuce : Bindings.concat("Compteur à ", compteur.valeurProperty()).
@@ -40,14 +40,17 @@ public class CompteurViewModel {
   // ----- Commandes (pattern Command) -----
 
   public void incrementerCommand() {
-    // TODO exercice 2 : déléguer au modèle.
+    compteur.incrementer();
+    // déléguer au modèle.
   }
 
   public void decrementerCommand() {
-    // TODO exercice 2 : déléguer au modèle.
+    compteur.decrementer();
+    // déléguer au modèle.
   }
 
   public void reinitialiserCommand() {
-    // TODO exercice 2 : déléguer au modèle.
+    compteur.reinitialiser();
+    // déléguer au modèle.
   }
 }
