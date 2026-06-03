@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import fr.nedjar.vigiechiro.audio.AudioView;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -52,8 +53,34 @@ public class QualificationController {
               }
             });
 
-    // TODO exercice 7 : câbler entièrement la vue sur le ViewModel.
-    //
+    colHorodatage
+        .cellValueFactoryProperty()
+        .set(cellData -> cellData.getValue().horodatageProperty().asString("HH:mm"));
+    colFrequence
+        .cellValueFactoryProperty()
+        .set(cellData -> cellData.getValue().frequenceDominanteKHzProperty().asString("%.1f kHz"));
+    colDuree
+        .cellValueFactoryProperty()
+        .set(cellData -> cellData.getValue().dureeSecondesProperty().asString("%d s"));
+    colStatut.cellValueFactoryProperty().set(cellData -> cellData.getValue().statutProperty());
+
+    tableSequences.setItems(viewModel.sequencesProperty());
+
+    viewModel
+        .sequenceSelectionneeProperty()
+        .bind(tableSequences.getSelectionModel().selectedItemProperty());
+
+    labelSelection.textProperty().bind(viewModel.descriptionSelectionProperty());
+
+    boutonEcouter.disableProperty().bind(viewModel.peutEcouterProperty().not());
+
+    zoneCommentaire.textProperty().bindBidirectional(viewModel.commentaireProperty());
+
+    choiceVerdict.setItems(FXCollections.observableArrayList(viewModel.listeVerdicts()));
+    choiceVerdict.valueProperty().bindBidirectional(viewModel.verdictSaisiProperty());
+
+    labelVerdictGlobal.textProperty().bind(viewModel.verdictGlobalLibelleProperty());
+
     // 1. Colonnes (cell value factory) : horodatage (HH:mm), fréquence (%.1f kHz),
     //    durée (en s), statut.
     // 2. tableSequences.setItems(viewModel.sequencesProperty());
