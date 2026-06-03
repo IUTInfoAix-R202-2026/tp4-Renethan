@@ -1,6 +1,7 @@
 package fr.univ_amu.iut.exercice5;
 
 import com.google.inject.Inject;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -31,8 +32,18 @@ public class PokemonController {
 
   @FXML
   private void initialize() {
-    // TODO exercice 5 : brancher le tableau et le formulaire sur le ViewModel.
-    //
+    colNumero.setCellValueFactory(
+        c -> new SimpleStringProperty(String.valueOf(c.getValue().numero())));
+    colNom.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().nom()));
+    colType.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().type()));
+
+    table.setItems(viewModel.pokemonsProperty());
+
+    labelResume.textProperty().bind(viewModel.resumeProperty());
+
+    champRecherche.textProperty().bindBidirectional(viewModel.rechercheProperty());
+    labelStatut.textProperty().bind(viewModel.statutProperty());
+    boutonAjouter.disableProperty().bind(viewModel.rechercheProperty().isEmpty());
     // 1. Dire à chaque colonne quoi afficher (cell value factory) :
     //      colNumero.setCellValueFactory(
     //          c -> new SimpleStringProperty(String.valueOf(c.getValue().numero())));
@@ -50,6 +61,6 @@ public class PokemonController {
 
   @FXML
   private void surAjouter() {
-    // TODO exercice 5 : déclencher la commande d'ajout du ViewModel.
+    viewModel.ajouter();
   }
 }
