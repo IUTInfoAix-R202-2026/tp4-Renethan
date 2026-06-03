@@ -1,6 +1,7 @@
 package fr.univ_amu.iut.exercice5;
 
 import com.google.inject.Inject;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -32,7 +33,8 @@ public class PokemonViewModel {
   public PokemonViewModel(PokemonService service) {
     this.service = service;
 
-    // TODO exercice 5 : remplir la liste observable à partir du service, puis
+    pokemons.setAll(service.tousLesPokemons());
+    resume.bind(Bindings.size(pokemons).asString().concat(" Pokémon"));
     // lier `resume` au nombre d'éléments (ex : "6 Pokémon").
     //
     // - pokemons.setAll(service.tousLesPokemons());
@@ -60,8 +62,17 @@ public class PokemonViewModel {
    * abonnée se mettra à jour toute seule.
    */
   public void ajouter() {
-    // TODO exercice 5 : ajouter le Pokémon recherché.
-    //
+    service
+        .chercherParNom(recherche.get())
+        .ifPresentOrElse(
+            p -> {
+              if (!pokemons.contains(p)) {
+                pokemons.add(p);
+                statut.set("");
+                recherche.set("");
+              } else statut.set("Déjà présent");
+            },
+            () -> statut.set("introuvable"));
     // 1. Demander au service le Pokémon nommé `recherche.get()`
     //    (service.chercherParNom(...), qui renvoie un Optional).
     // 2. S'il existe ET n'est pas déjà dans la liste : l'ajouter, vider la
